@@ -8,7 +8,7 @@
 
 <div class="row">
     <div class="col-sm-4">
-        <EditForm Model="@game">
+        <EditForm Model="@game" OnSubmit="HandleSubmit">
             <div class="mb-3">
                 <label for="name" class="form-label">Name:</label>
                 <InputText id="name" @bind-Value="@game.Name" class="form-control"/>
@@ -25,6 +25,7 @@
                 <label for="releaseDate" class="form-label">Release Date:</label>
                 <InputDate id="releaseDate" @bind-Value="@game.ReleaseDate" class="form-control"/>
             </div>
+            <button type="submit" class="btn btn-primary">Save</button>
         </EditForm>
     </div>
 </div>
@@ -33,7 +34,11 @@
     private Game game = new() {
         Name = string.Empty,
         Genre = string.Empty,
-        Price = 0,
         ReleaseDate = DateTime.UtcNow
     };
+
+    private void HandleSubmit()
+    {
+        GameClient.AddGame(game);
+    }
 }
