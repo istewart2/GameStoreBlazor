@@ -1,5 +1,6 @@
 ﻿@page "/game"
-@using Models;
+@using Models
+@inject NavigationManager NavigationManager
 
 <PageTitle>New Game</PageTitle>
 
@@ -26,6 +27,7 @@
                 <InputDate id="releaseDate" @bind-Value="@game.ReleaseDate" class="form-control"/>
             </div>
             <button type="submit" class="btn btn-primary">Save</button>
+            <button type="button" @onclick="HandleCancel" class="btn btn-secondary">Cancel</button>
         </EditForm>
     </div>
 </div>
@@ -40,5 +42,11 @@
     private void HandleSubmit()
     {
         GameClient.AddGame(game);
+        NavigationManager.NavigateTo("/");
+    }
+
+        private void HandleCancel()
+    {
+        NavigationManager.NavigateTo("/");
     }
 }

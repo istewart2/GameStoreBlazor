@@ -39,6 +39,7 @@ public static class GameClient
 
     public static void AddGame(Game game)
     {
+        game.Id = games.Max(x => x.Id) + 1;
         games.Add(game);
     }
 }
