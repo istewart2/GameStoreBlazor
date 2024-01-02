@@ -5,12 +5,9 @@
         <h5 class="modal-title" id="deleteModalLabel">@title</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body">
-        ...
-      </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @onclick="@Cancel">Cancel</button>
-        <button type="button" class="btn btn-primary" @onclick="@Confirm">Delete</button>
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @onclick="@Confirm">Delete</button>
       </div>
     </div>
   </div>
@@ -18,7 +15,7 @@
 
 @code {
     [Parameter]
-    public Game? Game { get; set; };
+    public Models.Game? Game { get; set; }
 
     [Parameter]
     public EventCallback<bool> OnClose { get; set; }
