@@ -19,7 +19,7 @@
       "type": "process",
       "args": [
         "publish",
-        "${workspaceFolder}/GameStore.sln",
+        "${workspaceFolder}/build.proj",
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary;ForceNoAlign"
       ],
@@ -29,7 +29,7 @@
       "label": "watch",
       "command": "dotnet",
       "type": "process",
-      "args": ["watch", "run", "--project", "${workspaceFolder}/GameStore.sln"],
+      "args": ["watch", "run", "--project", "${workspaceFolder}/build.proj"],
       "problemMatcher": "$msCompile"
     }
   ]
