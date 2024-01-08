@@ -4,3 +4,14 @@ GET {{baseUrl}}/games
 
 ###
 GET {{baseUrl}}/games/1
+
+###
+POST {{baseUrl}}/games
+Content-Type: application/json
+
+{
+    "name": "Minecraft",
+    "genre": "Kids & Family",
+    "price": 19.99,
+    "releaseDate": "2011-11-18"
+}

@@ -45,6 +45,16 @@ group.MapGet("/{id}", (int id) =>
         return Results.NotFound();
     }
     return Results.Ok(game);
+})
+.WithName("GetGame");
+
+// POST /games
+group.MapPost("/", (Game game) => 
+{
+    game.Id = games.Max(x => x.Id) + 1;
+    games.Add(game);
+
+    return Results.CreatedAtRoute("GetGame", new { id = game.Id }, game);
 });
 
 app.Run();
