@@ -1,4 +1,6 @@
-GET http://localhost:5023/games
+@baseUrl = http://localhost:5023
+
+GET {{baseUrl}}/games
 
 ###
-GET http://localhost:5023/games/1
+GET {{baseUrl}}/games/1
