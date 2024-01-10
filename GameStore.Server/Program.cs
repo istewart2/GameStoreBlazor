@@ -57,4 +57,23 @@ group.MapPost("/", (Game game) =>
     return Results.CreatedAtRoute("GetGame", new { id = game.Id }, game);
 });
 
+// PUT /games/{id}
+group.MapPut("/{id}", (int id, Game updatedGame) => 
+{
+    Game? existingGame = games.Find(x => x.Id == id);
+
+    if (existingGame is null)
+    {
+        updatedGame.Id = id;
+        games.Add(updatedGame);
+        return Results.CreatedAtRoute("GetGame", new { id = updatedGame.Id }, updatedGame);
+    }
+
+    existingGame.Name = updatedGame.Name;
+    existingGame.Genre = updatedGame.Genre;
+    existingGame.Price = updatedGame.Price;
+    existingGame.ReleaseDate = updatedGame.ReleaseDate;
+    return Results.NoContent();
+});
+
 app.Run();
