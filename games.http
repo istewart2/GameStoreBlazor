@@ -26,3 +26,6 @@ Content-Type: application/json
     "price": 9.99,
     "releaseDate": "1991-02-01"
 }
+
+###
+DELETE {{baseUrl}}/games/2

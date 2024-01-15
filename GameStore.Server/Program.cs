@@ -76,4 +76,19 @@ group.MapPut("/{id}", (int id, Game updatedGame) =>
     return Results.NoContent();
 });
 
+// DELETE /games/{id}
+group.MapDelete("/{id}", (int id) => 
+{
+    Game? game = games.Find(x => x.Id == id);
+    if (game is null)
+    {
+        return Results.NotFound();
+        // alternative option is 
+        // return Results.NoContent();
+    }
+    games.Remove(game);
+
+    return Results.NoContent();
+});
+
 app.Run();
