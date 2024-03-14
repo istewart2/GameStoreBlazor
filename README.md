@@ -9,5 +9,5 @@ docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=<YourStrong@Passw0rd>" -p 14
 ## Setting the connection string in Secret Manager
 
 ```powershell
-dotnet user-secrets set "ConnectionStrings:GameStoreContext" "Server:localhost; Database=GameStore; User Id=sa; Password=<YourStrong@Passw0rd>; TrustServerCertificate=True"
+dotnet user-secrets set "ConnectionStrings:GameStoreContext" "Server=localhost; Database=GameStore; User Id=sa; Password=<YourStrong@Passw0rd>; TrustServerCertificate=True"
 ```
