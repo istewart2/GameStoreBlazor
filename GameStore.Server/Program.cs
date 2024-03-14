@@ -1,33 +1,6 @@
 using GameStore.Server.Data;
 using GameStore.Server.Models;
-
-List<Game> games = new()
-    {
-        new Game() 
-        {
-            Id = 1,
-            Name = "Street Fighter II",
-            Genre = "Fighting",
-            Price = 19.99M,
-            ReleaseDate = new DateTime(1991, 2, 1)
-        },
-        new Game() 
-        {
-            Id = 2,
-            Name = "Final Fantasy XIV",
-            Genre = "RPG",
-            Price = 59.99M,
-            ReleaseDate = new DateTime(2010, 9, 30)
-        },
-        new Game() 
-        {
-            Id = 3,
-            Name = "FIFA 23",
-            Genre = "Sports",
-            Price = 69.99M,
-            ReleaseDate = new DateTime(2022, 9, 27)
-        },
-    };
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,12 +20,13 @@ app.UseCors();
 var group = app.MapGroup("/games").WithParameterValidation();
 
 // GET /games
-group.MapGet("/", () => games);
+// quicker to execute, no need to set up the change tracking as read-only
+group.MapGet("/", async (GameStoreContext context) => await context.Games.AsNoTracking().ToListAsync());
 
 // GET /games/{id}
-group.MapGet("/{id}", (int id) => 
+group.MapGet("/{id}", async (int id, GameStoreContext context) => 
 {
-    Game? game = games.Find(x => x.Id == id);
+    Game? game = await context.Games.FindAsync(id);
     if (game is null)
     {
         return Results.NotFound();
@@ -62,46 +36,33 @@ group.MapGet("/{id}", (int id) =>
 .WithName("GetGame");
 
 // POST /games
-group.MapPost("/", (Game game) => 
+group.MapPost("/", async (Game game, GameStoreContext context) => 
 {
-    game.Id = games.Max(x => x.Id) + 1;
-    games.Add(game);
+    context.Games.Add(game);
+    await context.SaveChangesAsync();
 
     return Results.CreatedAtRoute("GetGame", new { id = game.Id }, game);
 });
 
 // PUT /games/{id}
-group.MapPut("/{id}", (int id, Game updatedGame) => 
+group.MapPut("/{id}", async (int id, Game updatedGame, GameStoreContext context) => 
 {
-    Game? existingGame = games.Find(x => x.Id == id);
+    var rowsAffected = await context.Games.Where(game => game.Id == id).            ExecuteUpdateAsync(updates => 
+    updates.SetProperty(game => game.Name, updatedGame.Name)
+    .SetProperty(game => game.Genre, updatedGame.Genre)
+    .SetProperty(game => game.Price, updatedGame.Price)
+    .SetProperty(game => game.ReleaseDate, updatedGame.ReleaseDate));
 
-    if (existingGame is null)
-    {
-        updatedGame.Id = id;
-        games.Add(updatedGame);
-        return Results.CreatedAtRoute("GetGame", new { id = updatedGame.Id }, updatedGame);
-    }
-
-    existingGame.Name = updatedGame.Name;
-    existingGame.Genre = updatedGame.Genre;
-    existingGame.Price = updatedGame.Price;
-    existingGame.ReleaseDate = updatedGame.ReleaseDate;
-    return Results.NoContent();
+    return rowsAffected == 0 ? Results.NotFound() : Results.NoContent();
 });
 
 // DELETE /games/{id}
-group.MapDelete("/{id}", (int id) => 
+group.MapDelete("/{id}", async (int id, GameStoreContext context) => 
 {
-    Game? game = games.Find(x => x.Id == id);
-    if (game is null)
-    {
-        return Results.NotFound();
-        // alternative option is 
-        // return Results.NoContent();
-    }
-    games.Remove(game);
+    var rowsAffected = await context.Games.Where(game => game.Id == id)
+    .ExecuteDeleteAsync();
 
-    return Results.NoContent();
+    return rowsAffected == 0 ? Results.NotFound() : Results.NoContent();
 });
 
 app.Run();
